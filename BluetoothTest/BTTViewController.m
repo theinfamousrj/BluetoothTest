@@ -7,15 +7,18 @@
 //
 
 #import "BTTViewController.h"
+#import "Device.h"
 
 @implementation BTTViewController
 
 @synthesize connectionSession = _connectionSession;
 @synthesize connectionPeers = _connectionPeers;
 @synthesize connectionPicker = _connectionPicker;
-@synthesize textData = _textData;
-NSArray *receivedData;
+@synthesize receivedText = _receivedText;
+@synthesize sentText = _sentText;
 
+NSString *receivedData;
+NSString *userName;
 
 - (void)didReceiveMemoryWarning
 {
@@ -28,21 +31,19 @@ NSArray *receivedData;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    connectionPicker = [[GKPeerPickerController alloc] init];  
-    connectionPicker.delegate = self;
-    
+    _connectionPicker = [[GKPeerPickerController alloc] init];  
+    _connectionPicker.delegate = self;
+
     //NOTE - GKPeerPickerConnectionTypeNearby is for Bluetooth connection, you can do the same thing over Wi-Fi with different type of connection  
-    connectionPicker.connectionTypesMask = GKPeerPickerConnectionTypeNearby;  
-    connectionPeers = [[NSMutableArray alloc] init];  
-    
+    _connectionPicker.connectionTypesMask = GKPeerPickerConnectionTypeNearby;  
+    _connectionPeers = [[NSMutableArray alloc] init];  
 }
 
 - (void)viewDidUnload
 {
+    [self setReceivedText:nil];
+    [self setSentText:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -90,16 +91,18 @@ NSArray *receivedData;
 {  
     // Get the session and assign it locally  
     self.connectionSession = session;  
-    session.delegate = self;  
+    session.delegate = self;
+    [self.connectionSession setDataReceiveHandler:self withContext:NULL];
     
     [picker dismiss];  
-}
+}  
 
 //Method for sending data that can be used anywhere in your app  
-- (void)sendData:(NSArray*)data  
+- (void)sendData:(NSString*)data  
 {  
-    NSData* encodedArray = [NSKeyedArchiver archivedDataWithRootObject:data];
-    [connectionSession sendDataToAllPeers:encodedArray withDataMode:GKSendDataReliable error:nil];                            
+    [self appendText:data];
+    NSData* theData = [data dataUsingEncoding:NSASCIIStringEncoding];
+    [_connectionSession sendDataToAllPeers:theData withDataMode:GKSendDataReliable error:nil];                           
 }
 
 #pragma mark - GKSessionDelegate  
@@ -107,53 +110,75 @@ NSArray *receivedData;
 // Function to receive data when sent from peer  
 - (void)receiveData:(NSData *)data fromPeer:(NSString *)peer inSession: (GKSession *)session context:(void *)context  
 {  
-    receivedData = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSString* theData = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    [self appendText:theData];
+    [self recData];
 }
 
-- (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state
-{  
+- (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state {  
     if (state == GKPeerStateConnected) {  
         // Add the peer to the Array  
-        [connectionPeers addObject:peerID];  
+        [_connectionPeers addObject:peerID];  
         
         // Used to acknowledge that we will be sending data  
-        [session setDataReceiveHandler:self withContext:nil];  
+        [session setDataReceiveHandler:self withContext:nil];
+        
+        [self appendText:@"Conversation connected..."];
         
         //In case you need to do something else when a peer connects, do it here  
     }  
     else if (state == GKPeerStateDisconnected) {  
-        [connectionPeers removeObject:peerID];  
+        [self.connectionPeers removeObject:peerID];  
         //Any processing when a peer disconnects  
     }  
 }
 
-- (BOOL)sendData:(NSData *)data toPeers:(NSArray *)peers withDataMode:(GKSendDataMode)mode error:(NSError **)error
+- (void)appendText:(NSString *)text
 {
-    return YES;
+    NSString* concat = [NSString stringWithFormat:@"%@\n%@", receivedData, text];
+    receivedData = [concat copy];
+    [self refreshText];
+}
+
+- (void)refreshText
+{
+    self.receivedText.text = receivedData;
+}
+
+#pragma mark IBActions
+
+- (IBAction)setUser:(UIBarButtonItem*)sender
+{
+    userName = self.sentText.text;
+    //NSLog(@"userName is now: %@", userName);
+    self.sentText.text = @"";
+    sender.title = userName;
+    sender.enabled = NO;
 }
 
 - (IBAction)recData
 {
-    
+    [self refreshText];
+    //NSLog(@"Data received: %@", receivedData);
 }
 
 - (IBAction)sendData;
 {
-    NSMutableArray *theArray = [[NSMutableArray alloc] init];
-    [theArray addObject:self.textData.text];
-    [self sendData:theArray];
-    NSLog(@"Data sent: %@", self.textData.text);
+    NSString *theData = [NSString stringWithFormat:@"%@: %@", userName, self.sentText.text];
+    [self sendData:theData];
+    //NSLog(@"Data sent: %@", theData);
+    self.sentText.text = @"";
 }
 
 - (IBAction)connectBT 
 {  
-    [connectionPicker show];
+    [_connectionPicker show];
 }  
 
 - (IBAction)disconnectBT
 {  
-    [connectionSession disconnectFromAllPeers];  
-    [connectionPeers removeAllObjects];  
+    [_connectionSession disconnectFromAllPeers];
+    [_connectionPeers removeAllObjects];
 }  
 
 @end

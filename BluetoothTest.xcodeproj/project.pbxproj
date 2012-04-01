@@ -17,7 +17,6 @@
 		8164D389152537EF00AC8F60 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8164D387152537EF00AC8F60 /* MainStoryboard_iPad.storyboard */; };
 		8164D38C152537EF00AC8F60 /* BTTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8164D38B152537EF00AC8F60 /* BTTViewController.m */; };
 		8164D3931525384A00AC8F60 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8164D3921525384A00AC8F60 /* GameKit.framework */; };
-		81EC5BF71526A9FE007617CB /* SessionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 81EC5BF61526A9FE007617CB /* SessionController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,8 +35,6 @@
 		8164D38A152537EF00AC8F60 /* BTTViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTTViewController.h; sourceTree = "<group>"; };
 		8164D38B152537EF00AC8F60 /* BTTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BTTViewController.m; sourceTree = "<group>"; };
 		8164D3921525384A00AC8F60 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
-		81EC5BF51526A9FE007617CB /* SessionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionController.h; sourceTree = "<group>"; };
-		81EC5BF61526A9FE007617CB /* SessionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +87,6 @@
 				8164D382152537EF00AC8F60 /* BTTAppDelegate.m */,
 				8164D38A152537EF00AC8F60 /* BTTViewController.h */,
 				8164D38B152537EF00AC8F60 /* BTTViewController.m */,
-				81EC5BF41526A98F007617CB /* Session Junk */,
 				81EC5BF21526A6F7007617CB /* Storyboards */,
 				8164D379152537EF00AC8F60 /* Supporting Files */,
 			);
@@ -115,16 +111,6 @@
 				8164D387152537EF00AC8F60 /* MainStoryboard_iPad.storyboard */,
 			);
 			name = Storyboards;
-			path = ..;
-			sourceTree = "<group>";
-		};
-		81EC5BF41526A98F007617CB /* Session Junk */ = {
-			isa = PBXGroup;
-			children = (
-				81EC5BF51526A9FE007617CB /* SessionController.h */,
-				81EC5BF61526A9FE007617CB /* SessionController.m */,
-			);
-			name = "Session Junk";
 			path = ..;
 			sourceTree = "<group>";
 		};
@@ -195,7 +181,6 @@
 				8164D37F152537EF00AC8F60 /* main.m in Sources */,
 				8164D383152537EF00AC8F60 /* BTTAppDelegate.m in Sources */,
 				8164D38C152537EF00AC8F60 /* BTTViewController.m in Sources */,
-				81EC5BF71526A9FE007617CB /* SessionController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

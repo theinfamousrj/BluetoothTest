@@ -9,20 +9,18 @@
 #import <UIKit/UIKit.h>
 #import <GameKit/GameKit.h>
 
-@interface BTTViewController : UIViewController <UIApplicationDelegate, GKSessionDelegate, GKPeerPickerControllerDelegate> {
-    GKPeerPickerController *connectionPicker;  
-    GKSession* connectionSession;  
-    NSMutableArray *connectionPeers;  
-}
+@interface BTTViewController : UIViewController <UIApplicationDelegate, GKSessionDelegate, GKPeerPickerControllerDelegate>
 
-@property (retain) GKSession *connectionSession;  
+@property (retain) GKSession* connectionSession;  
 @property (nonatomic, retain) NSMutableArray *connectionPeers;  
-@property (nonatomic, retain) GKPeerPickerController *connectionPicker;
-@property (weak, nonatomic) IBOutlet UITextField *textData;
+@property (nonatomic, retain) GKPeerPickerController* connectionPicker;  
+@property (weak, nonatomic) IBOutlet UILabel *receivedText;
+@property (weak, nonatomic) IBOutlet UITextField *sentText;
 
 - (IBAction)recData;
 - (IBAction)sendData;
 - (IBAction)connectBT;
 - (IBAction)disconnectBT;
+- (IBAction)setUser:(UIBarButtonItem*)sender;
 
 @end
