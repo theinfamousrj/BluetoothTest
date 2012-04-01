@@ -105,6 +105,19 @@ NSString *userName;
     [_connectionSession sendDataToAllPeers:theData withDataMode:GKSendDataReliable error:nil];                           
 }
 
+#pragma mark - GKPlayer
+
+- (void)authenticateLocalPlayer
+{
+    GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
+    [localPlayer authenticateWithCompletionHandler:^(NSError *error) {
+        if (localPlayer.isAuthenticated)
+        {
+            userName = localPlayer.alias;
+        }
+    }];
+}
+
 #pragma mark - GKSessionDelegate  
 
 // Function to receive data when sent from peer  
@@ -145,13 +158,14 @@ NSString *userName;
     self.receivedText.text = receivedData;
 }
 
-#pragma mark IBActions
+#pragma mark - IBActions
 
 - (IBAction)setUser:(UIBarButtonItem*)sender
 {
     userName = self.sentText.text;
     //NSLog(@"userName is now: %@", userName);
     self.sentText.text = @"";
+    //[self authenticateLocalPlayer];
     sender.title = userName;
     sender.enabled = NO;
 }
@@ -179,6 +193,6 @@ NSString *userName;
 {  
     [_connectionSession disconnectFromAllPeers];
     [_connectionPeers removeAllObjects];
-}  
+}
 
 @end
